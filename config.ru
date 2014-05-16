@@ -1,0 +1,5 @@
+require 'dotenv'
+Dotenv.load
+
+require 'sass/plugin/rack'
+use Sass::Plugin::Rack
