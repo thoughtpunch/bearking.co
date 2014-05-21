@@ -8,7 +8,6 @@ gem 'sinatra-activerecord', '2.0.0.rc2'
 gem 'puma'
 gem 'rack'
 gem 'rake'
-gem 'rack-flash3'
 
 #MAIL
 gem 'mail'
