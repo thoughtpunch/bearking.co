@@ -14,28 +14,28 @@ namespace :foreman do
   desc "Export the Procfile to Ubuntu's upstart scripts"
   task :export do
     on roles :all do
-      execute "cd #{current_path} && foreman export upstart /etc/init -a #{application} -u #{user} -l /var/#{application}/log"
+      execute "cd #{current_path} && foreman export upstart /etc/init -a bearking.co -u deploy -l /var/www/bearking.co/current/log"
     end
   end
 
   desc "Start the application services"
   task :start do
     on roles :all do
-      execute "#{sudo} service #{app_name} start"
+      execute "sudo service bearking.co start"
     end
   end
 
   desc "Stop the application services"
   task :stop do
     on roles :all do
-      execute "#{sudo} service #{app_name} stop"
+      execute "sudo service bearking.co stop"
     end
   end
 
   desc "Restart the application services"
   task :restart do
     on roles :all do
-      execute "#{sudo} service #{app_name} start || #{sudo} service #{app_name} restart"
+      execute "sudo service bearking.co start || sudo service bearking.co restart"
     end
   end
 end
@@ -45,7 +45,7 @@ namespace :deploy do
   task :restart do
     on roles :all do
       foreman.export
-      execute "(kill -s SIGUSR1 $(ps -C ruby -F | grep '/puma' | awk {'print $2'})) || #{sudo} service #{app_name} restart"
+      execute "(kill -s SIGUSR1 $(ps -C ruby -F | grep '/puma' | awk {'print $2'})) || sudo service bearking.co restart"
     end
   end
 end
