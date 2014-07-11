@@ -1,17 +1,13 @@
 # config valid only for Capistrano 3.1
 lock '3.2.1'
 
-set :application, 'my_app_name'
-set :repo_url, 'git@example.com:me/my_repo.git'
-
-# Default branch is :master
-# ask :branch, proc { `git rev-parse --abbrev-ref HEAD`.chomp }.call
-
-# Default deploy_to directory is /var/www/my_app
-# set :deploy_to, '/var/www/my_app'
-
-# Default value for :scm is :git
-# set :scm, :git
+set :application,  'bearking.co'
+set :app_name,     "bearking.co"
+set :repo_url,     'git@github.com:thoughtpunch/bearking.co.git'
+set :repository,   'git@github.com:thoughtpunch/bearking.co.git'
+set :user,         "dan"
+set :scm,          :git
+set :scm_username, "thoughtpunch"
 
 # Default value for :format is :pretty
 # set :format, :pretty
@@ -37,11 +33,13 @@ set :repo_url, 'git@example.com:me/my_repo.git'
 namespace :deploy do
 
   desc 'Restart application'
-  task :restart do
-    on roles(:app), in: :sequence, wait: 5 do
-      # Your restart mechanism here, for example:
-      # execute :touch, release_path.join('tmp/restart.txt')
-    end
+  task :restart, :roles => :app do
+    foreman.export
+
+    # on OS X the equivalent pid-finding command is `ps | grep '/puma' | head -n 1 | awk {'print $1'}`
+    run "(kill -s SIGUSR1 $(ps -C ruby -F | grep '/puma' | awk {'print $2'})) || #{sudo} service #{app_name} restart"
+
+    # foreman.restart # uncomment this (and comment line above) if we need to read changes to the procfile
   end
 
   after :publishing, :restart
@@ -55,4 +53,28 @@ namespace :deploy do
     end
   end
 
+end
+
+# config/deploy.rb
+
+namespace :foreman do
+  desc "Export the Procfile to Ubuntu's upstart scripts"
+  task :export, :roles => :app do
+    run "cd #{current_path} && #{sudo} foreman export upstart /etc/init -a #{app_name} -u #{user} -l /var/#{app_name}/log"
+  end
+
+  desc "Start the application services"
+  task :start, :roles => :app do
+    run "#{sudo} service #{app_name} start"
+  end
+
+  desc "Stop the application services"
+  task :stop, :roles => :app do
+    run "#{sudo} service #{app_name} stop"
+  end
+
+  desc "Restart the application services"
+  task :restart, :roles => :app do
+    run "#{sudo} service #{app_name} start || #{sudo} service #{app_name} restart"
+  end
 end
