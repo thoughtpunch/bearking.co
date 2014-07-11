@@ -4,7 +4,7 @@
 # is considered to be the first unless any hosts have the primary
 # property set.  Don't declare `role :all`, it's a meta role.
 
-role :app, %w{dan@bearking.co}
+role :app, ['dan@bearking.co']
 
 # Extended Server Syntax
 # ======================
@@ -12,7 +12,7 @@ role :app, %w{dan@bearking.co}
 # server list. The second argument is a, or duck-types, Hash and is
 # used to set extended properties on the server.
 
-server 'bearking.co', user: 'dan', roles: %w{app}
+server 'bearking.co', user: 'deploy', roles: [:app]
 
 
 # Custom SSH Options
