@@ -34,17 +34,10 @@ end
 
 
 namespace :deploy do
-
-  desc 'Restart application'
   task :restart do
-    foreman.export
-
-    # on OS X the equivalent pid-finding command is `ps | grep '/puma' | head -n 1 | awk {'print $1'}`
-    run "(kill -s SIGUSR1 $(ps -C ruby -F | grep '/puma' | awk {'print $2'})) || #{sudo} service #{app_name} restart"
-
-    # foreman.restart # uncomment this (and comment line above) if we need to read changes to the procfile
+    on roles :all do
+      foreman.export
+      execute "(kill -s SIGUSR1 $(ps -C ruby -F | grep '/puma' | awk {'print $2'})) || #{sudo} service #{app_name} restart"
+    end
   end
-
 end
-
-# config/deploy.rb
