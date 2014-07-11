@@ -1,8 +1,6 @@
 require "bundler/setup"
 require "sinatra"
 require "sinatra/activerecord"
-require "rack-flash"
-
 
 class BearKingApp < Sinatra::Base
 
@@ -11,8 +9,8 @@ class BearKingApp < Sinatra::Base
   set :sessions, true
   set :server, :puma
   enable :sessions
-  
+
   get '/' do
-    return 'It works!'
+    erb :home
   end
 end
