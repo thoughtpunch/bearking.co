@@ -32,6 +32,7 @@ gem 'dotenv'
 gem 'capistrano'
 gem 'capistrano-bundler'
 gem "capistrano3-puma", :github => "seuros/capistrano-puma"
+gem 'capistrano-rvm'
 
 #JSON
 gem 'json', '1.5.2'
